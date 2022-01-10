@@ -11,3 +11,4 @@ log_level : "debug"
 -	github.com/spf13/cobra v1.2.1: CLI
 -	github.com/spf13/viper v1.10.1: unmarshal yaml
 -	go.uber.org/zap v1.17.0: logging
+-   github.com/gin-gonic/gin: REST API

@@ -28,6 +28,7 @@ var rootCmd = &cobra.Command{
 		if err := logger.CreateLogger(cfg.LogFile, cfg.LogLevel); err != nil {
 			shutDown(err)
 		}
+		logger.Log.Sugar().Infof("Using config file: %s", cfg.LogCfgFile)
 		logger.Log.Sugar().Debugf("WEB server is runnig %s", cfg.HttpListen)
 		server.StartSRV(cfg.HttpListen)
 	},

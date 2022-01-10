@@ -1,8 +1,6 @@
 package config
 
 import (
-	"fmt"
-
 	"github.com/spf13/viper"
 )
 
@@ -16,6 +14,7 @@ type Config struct {
 	HttpListen string
 	LogFile    string
 	LogLevel   string
+	LogCfgFile string
 }
 
 func (c *Config) GetConfig(cfgFile string) error {
@@ -26,10 +25,10 @@ func (c *Config) GetConfig(cfgFile string) error {
 			return err
 		}
 
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
 		c.HttpListen = viper.GetString("http_listen")
 		c.LogFile = viper.GetString("log_file")
 		c.LogLevel = viper.GetString("log_level")
+		c.LogCfgFile = viper.ConfigFileUsed()
 		return nil
 
 	}
@@ -42,5 +41,5 @@ func (c *Config) setDefaults() {
 	c.HttpListen = defaultHttpListen
 	c.LogFile = defaultLogFile
 	c.LogLevel = defaultLogLevel
-	fmt.Println("Set default config")
+	c.LogCfgFile = "default"
 }
