@@ -1,12 +1,14 @@
 package server
 
 import (
+	"fmt"
 	"interviewDemo/internal/logger"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
+// Stock is type describe stocks
 type Stock struct {
 	Symbol   string `json:"symbol"`
 	Name     string `json:"name,omitempty"`
@@ -38,12 +40,16 @@ func logMiddleware(c *gin.Context) {
 	c.Next()
 }
 
-func StartSRV(httpListen string) {
+// StartSRV starts web server
+func StartSRV(httpListen string) error {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	router.Use(logMiddleware)
 
 	router.GET("/", sayHello)
 	router.POST("/stock", stockInfo)
-	router.Run(httpListen)
+	if err := router.Run(httpListen); err != nil {
+		return fmt.Errorf("failed to start server: %v", err)
+	}
+	return nil
 }

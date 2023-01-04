@@ -1,0 +1,19 @@
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - misspell
+    - stylecheck
+    - forcetypeassert
+    - gocritic
+    - gomnd
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - tagliatelle
+    - wrapcheck

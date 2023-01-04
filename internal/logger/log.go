@@ -1,12 +1,16 @@
 package logger
 
 import (
+	"fmt"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
+// Log is zap logger
 var Log *zap.Logger
 
+// CreateLogger for app
 func CreateLogger(logFile string, logLevel string) error {
 	var err error
 	cfg := zap.Config{
@@ -25,7 +29,7 @@ func CreateLogger(logFile string, logLevel string) error {
 		},
 	}
 	if Log, err = cfg.Build(); err != nil {
-		return err
+		return fmt.Errorf("failed to create logger: %v", err)
 	}
 	return nil
 }
