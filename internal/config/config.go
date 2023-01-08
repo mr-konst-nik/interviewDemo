@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	defaultHTTPListen = "127.0.0.1:8888"
+	defaultHTTPListen = ":8080"
 	defaultLogFile    = "./log.txt"
 	defaultLogLevel   = "info"
 )

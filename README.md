@@ -1,10 +1,19 @@
 ## Description
-Starting web server with setting from yaml with flag *-- config file.name*, otherwise server will starting by defaults.
+Examples of my fast coding for job interviews.
+(Production ready code looks some different).
 
+## Starting
+Start application in docker container.
+
+To start application without docker
+-   in first start use command *make imports*
+-   use command *make run args="--config ./config/cfg.yaml"*
+
+## Config
 Config example
 ```yaml
-http_listen: "127.0.0.1:8080"
-log_file : "./log/log.txt"
+http_listen: ":8080"
+log_file : "./log.txt"
 log_level : "debug"
 ```
 ## Usage libs
