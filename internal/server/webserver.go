@@ -8,31 +8,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Stock is type describe stocks
-type Stock struct {
-	Symbol   string `json:"symbol"`
-	Name     string `json:"name,omitempty"`
-	Exchange string `json:"exchange"`
-}
-
 func sayHello(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Hello",
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		"title": "It's works!",
 	})
 }
 
-func stockInfo(c *gin.Context) {
-	var json Stock
-	if err := c.BindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+func coinInfo(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{})
+}
 
-	c.JSON(http.StatusOK, gin.H{
-		"symbol":   json.Symbol,
-		"name":     json.Name,
-		"exchange": json.Exchange,
-	})
+func coinAdd(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+func coinUpdate(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+func coinDelete(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{})
 }
 
 func logMiddleware(c *gin.Context) {
@@ -44,10 +39,17 @@ func logMiddleware(c *gin.Context) {
 func StartSRV(httpListen string) error {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
+	router.LoadHTMLGlob("web/templates/*")
 	router.Use(logMiddleware)
 
 	router.GET("/", sayHello)
-	router.POST("/stock", stockInfo)
+
+	v2 := router.Group("/api/v2/stock")
+	v2.POST("/add", coinAdd)
+	v2.GET("/info", coinInfo)
+	v2.PUT("/change", coinUpdate)
+	v2.DELETE("/delete", coinDelete)
+
 	if err := router.Run(httpListen); err != nil {
 		return fmt.Errorf("failed to start server: %v", err)
 	}
