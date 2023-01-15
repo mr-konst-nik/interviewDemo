@@ -3,10 +3,22 @@ package server
 import (
 	"fmt"
 	"interviewDemo/internal/logger"
+	"interviewDemo/internal/model"
+	"interviewDemo/internal/repo"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
+
+// CoinItemRequestBody is type CoinItem for receiving through REST
+type CoinItemRequestBody struct {
+	SymbolID    string `json:"symbol"`
+	Name        string `json:"name"`
+	TypeID      uint8  `json:"type"`
+	ExchangesID []uint `json:"exchanges"`
+}
+
+var r = repo.NewCoinList()
 
 func sayHello(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
@@ -15,19 +27,58 @@ func sayHello(c *gin.Context) {
 }
 
 func coinInfo(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+	symbol := c.Param("symbol")
+	coin, err := r.Read(symbol)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"status": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": true, "message": "find sucesfully", "data": &coin})
 }
 
 func coinAdd(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+	coinBody := CoinItemRequestBody{}
+
+	if err := c.BindJSON(&coinBody); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "message": err.Error()})
+		return
+	}
+
+	coinItem := model.CoinItem{
+		Name:        coinBody.Name,
+		TypeID:      coinBody.TypeID,
+		ExchangesID: coinBody.ExchangesID,
+	}
+
+	if err := r.Create(coinBody.SymbolID, &coinItem); err != nil {
+		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"status": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{"status": true, "message": "created sucesfully", "data": &coinItem})
 }
 
 func coinUpdate(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+	symbol := c.Param("symbol")
+	coinItem := model.CoinItem{}
+	if err := c.BindJSON(&coinItem); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "message": err.Error()})
+		return
+	}
+
+	if err := r.Update(symbol, &coinItem); err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"status": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": true, "message": "updated sucesfully", "data": &coinItem})
 }
 
 func coinDelete(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+	symbol := c.Param("symbol")
+	if err := r.Delete(symbol); err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"status": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": true, "message": "deleted sucesfully", "data": &symbol})
 }
 
 func logMiddleware(c *gin.Context) {
@@ -44,11 +95,11 @@ func StartSRV(httpListen string) error {
 
 	router.GET("/", sayHello)
 
-	v2 := router.Group("/api/v2/stock")
+	v2 := router.Group("/api/v2/coin")
 	v2.POST("/add", coinAdd)
-	v2.GET("/info", coinInfo)
-	v2.PUT("/change", coinUpdate)
-	v2.DELETE("/delete", coinDelete)
+	v2.GET("/info/:symbol", coinInfo)
+	v2.PUT("/change/:symbol", coinUpdate)
+	v2.DELETE("/delete/:symbol", coinDelete)
 
 	if err := router.Run(httpListen); err != nil {
 		return fmt.Errorf("failed to start server: %v", err)

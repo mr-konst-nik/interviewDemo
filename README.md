@@ -1,6 +1,5 @@
 ## Description
-Examples of my fast coding for job interviews.
-(Production ready code looks some different).
+Example of REST API for job interviews.
 
 ## Starting
 Start application in docker container.
