@@ -5,6 +5,7 @@ import (
 	"interviewDemo/internal/logger"
 	"interviewDemo/internal/model"
 	"interviewDemo/internal/repo"
+	"interviewDemo/internal/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +19,8 @@ type CoinItemRequestBody struct {
 	ExchangesID []uint `json:"exchanges"`
 }
 
-var r = repo.NewCoinList()
+var coinRepo = repo.NewCoinList()
+var coinService = service.NewCoinListServise(coinRepo)
 
 func sayHello(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
@@ -28,7 +30,7 @@ func sayHello(c *gin.Context) {
 
 func coinInfo(c *gin.Context) {
 	symbol := c.Param("symbol")
-	coin, err := r.Read(symbol)
+	coin, err := coinService.Read(symbol)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"status": false, "message": err.Error()})
 		return
@@ -50,7 +52,7 @@ func coinAdd(c *gin.Context) {
 		ExchangesID: coinBody.ExchangesID,
 	}
 
-	if err := r.Create(coinBody.SymbolID, &coinItem); err != nil {
+	if err := coinService.Create(coinBody.SymbolID, &coinItem); err != nil {
 		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"status": false, "message": err.Error()})
 		return
 	}
@@ -65,7 +67,7 @@ func coinUpdate(c *gin.Context) {
 		return
 	}
 
-	if err := r.Update(symbol, &coinItem); err != nil {
+	if err := coinService.Update(symbol, &coinItem); err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"status": false, "message": err.Error()})
 		return
 	}
@@ -74,7 +76,7 @@ func coinUpdate(c *gin.Context) {
 
 func coinDelete(c *gin.Context) {
 	symbol := c.Param("symbol")
-	if err := r.Delete(symbol); err != nil {
+	if err := coinService.Delete(symbol); err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"status": false, "message": err.Error()})
 		return
 	}
