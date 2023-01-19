@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"interviewDemo/internal/model"
 	"interviewDemo/internal/repo"
 )
@@ -27,20 +28,36 @@ func NewCoinListServise(coinListRepo repo.CoinListRepo) *CoinListServise {
 
 // Create a item of the coin list
 func (cl CoinListServise) Create(symbol string, coin *model.CoinItem) error {
-	return cl.coinListRepo.Create(symbol, coin)
+	err := cl.coinListRepo.Create(symbol, coin)
+	if err != nil {
+		err = fmt.Errorf("failed create coin %w", err)
+	}
+	return err
 }
 
 // Read a item of the coin list
 func (cl CoinListServise) Read(symbol string) (*model.CoinItem, error) {
-	return cl.coinListRepo.Read(symbol)
+	m, err := cl.coinListRepo.Read(symbol)
+	if err != nil {
+		err = fmt.Errorf("failed read coin %w", err)
+	}
+	return m, err
 }
 
 // Update a item of the coin list by symbol
 func (cl CoinListServise) Update(symbol string, coin *model.CoinItem) error {
-	return cl.coinListRepo.Update(symbol, coin)
+	err := cl.coinListRepo.Update(symbol, coin)
+	if err != nil {
+		err = fmt.Errorf("failed update coin %w", err)
+	}
+	return err
 }
 
 // Delete a item of the coin list by symbol
 func (cl CoinListServise) Delete(symbol string) error {
-	return cl.coinListRepo.Delete(symbol)
+	err := cl.coinListRepo.Delete(symbol)
+	if err != nil {
+		err = fmt.Errorf("failed delete coin %w", err)
+	}
+	return err
 }

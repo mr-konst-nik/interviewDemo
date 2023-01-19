@@ -1,17 +1,10 @@
 package repo
 
 import (
-	"errors"
 	"fmt"
 	"interviewDemo/internal/model"
 	"sync"
 )
-
-// ErrNotFound error if symbol not found
-var ErrNotFound = errors.New("not found")
-
-// ErrIsExist error is symbol already exists
-var ErrIsExist = errors.New("already exists")
 
 // CoinList consists all list of cryptocurrencies
 // key is id in string format, like "BTC"
@@ -40,7 +33,7 @@ func (cl *CoinList) Create(symbol string, coin *model.CoinItem) error {
 	cl.Lock()
 	defer cl.Unlock()
 	if _, ok := cl.m[symbol]; ok {
-		return fmt.Errorf("%v: %w", symbol, ErrIsExist)
+		return fmt.Errorf("%v: %w", symbol, model.ErrIsExist)
 	}
 	cl.m[symbol] = coin
 	return nil
@@ -51,7 +44,7 @@ func (cl *CoinList) Read(symbol string) (*model.CoinItem, error) {
 	cl.Lock()
 	defer cl.Unlock()
 	if _, ok := cl.m[symbol]; !ok {
-		return &model.CoinItem{}, fmt.Errorf("%v: %w", symbol, ErrNotFound)
+		return &model.CoinItem{}, fmt.Errorf("%v: %w", symbol, model.ErrNotFound)
 	}
 	return cl.m[symbol], nil
 }
@@ -61,7 +54,7 @@ func (cl *CoinList) Update(symbol string, coin *model.CoinItem) error {
 	cl.Lock()
 	defer cl.Unlock()
 	if _, ok := cl.m[symbol]; !ok {
-		return fmt.Errorf("%v: %w", symbol, ErrNotFound)
+		return fmt.Errorf("%v: %w", symbol, model.ErrNotFound)
 	}
 	cl.m[symbol] = coin
 	return nil
@@ -72,7 +65,7 @@ func (cl *CoinList) Delete(symbol string) error {
 	cl.Lock()
 	defer cl.Unlock()
 	if _, ok := cl.m[symbol]; !ok {
-		return fmt.Errorf("%v: %w", symbol, ErrNotFound)
+		return fmt.Errorf("%v: %w", symbol, model.ErrNotFound)
 	}
 	delete(cl.m, symbol)
 	return nil

@@ -35,7 +35,7 @@ func coinInfo(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"status": false, "message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": true, "message": "find sucesfully", "data": &coin})
+	c.JSON(http.StatusOK, gin.H{"status": true, "message": "find successfully", "data": &coin})
 }
 
 func coinAdd(c *gin.Context) {
@@ -56,7 +56,7 @@ func coinAdd(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"status": false, "message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"status": true, "message": "created sucesfully", "data": &coinItem})
+	c.JSON(http.StatusCreated, gin.H{"status": true, "message": "created successfully", "data": &coinItem})
 }
 
 func coinUpdate(c *gin.Context) {
@@ -71,7 +71,7 @@ func coinUpdate(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"status": false, "message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": true, "message": "updated sucesfully", "data": &coinItem})
+	c.JSON(http.StatusOK, gin.H{"status": true, "message": "updated successfully", "data": &coinItem})
 }
 
 func coinDelete(c *gin.Context) {
@@ -80,7 +80,7 @@ func coinDelete(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"status": false, "message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": true, "message": "deleted sucesfully", "data": &symbol})
+	c.JSON(http.StatusOK, gin.H{"status": true, "message": "deleted successfully", "data": &symbol})
 }
 
 func logMiddleware(c *gin.Context) {
