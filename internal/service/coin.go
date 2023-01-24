@@ -54,10 +54,11 @@ func (cl CoinListServise) Update(symbol string, coin *model.CoinItem) error {
 }
 
 // Delete a item of the coin list by symbol
-func (cl CoinListServise) Delete(symbol string) error {
-	err := cl.coinListRepo.Delete(symbol)
+func (cl CoinListServise) Delete(symbol string) (*model.CoinItem, error) {
+	c, err := cl.coinListRepo.Delete(symbol)
 	if err != nil {
 		err = fmt.Errorf("failed delete coin %w", err)
+		return nil, err
 	}
-	return err
+	return c, nil
 }

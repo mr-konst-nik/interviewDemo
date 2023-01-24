@@ -9,4 +9,8 @@ deps:
 .PHONY: lint
 lint:
 	golint ./...
-	golangci-lint run ./... 		
+	golangci-lint run ./...
+
+.PHONY: swag
+swag:
+	swag init -g .\internal\server\webserver.go

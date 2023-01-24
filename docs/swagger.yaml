@@ -1,0 +1,170 @@
+basePath: /api/v2
+definitions:
+  model.CoinItem:
+    properties:
+      exchanges:
+        items:
+          type: integer
+        type: array
+      name:
+        type: string
+      type:
+        type: integer
+    type: object
+  model.CoinItemRequestBody:
+    properties:
+      exchanges:
+        items:
+          type: integer
+        type: array
+      name:
+        type: string
+      symbol:
+        type: string
+      type:
+        type: integer
+    type: object
+  model.MessageErr:
+    properties:
+      message:
+        type: string
+      status:
+        default: false
+        type: boolean
+    type: object
+  model.MessageOk:
+    properties:
+      data:
+        $ref: '#/definitions/model.CoinItem'
+      message:
+        type: string
+      status:
+        default: true
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example for job interviews
+  version: "1.0"
+paths:
+  /coin/add/:
+    post:
+      description: create a new coin
+      operationId: add-coin
+      parameters:
+      - description: coin data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.CoinItemRequestBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.MessageOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.MessageErr'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/model.MessageErr'
+      summary: create a new item
+      tags:
+      - coins
+  /coin/change/{symbol}:
+    put:
+      description: update coin by symbol ID
+      operationId: update-coin
+      parameters:
+      - description: coin symbol
+        in: path
+        name: symbol
+        required: true
+        type: string
+      - description: coin data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.CoinItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.MessageOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.MessageErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.MessageErr'
+      summary: update item
+      tags:
+      - coins
+  /coin/delete/{symbol}:
+    delete:
+      description: delete coin by symbol ID
+      operationId: delete-coin
+      parameters:
+      - description: coin symbol
+        in: path
+        name: symbol
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.MessageOk'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.MessageErr'
+      summary: delete item
+      tags:
+      - coins
+  /coin/info/{symbol}:
+    get:
+      description: get an item from coin list by symbol ID, like "btc"
+      operationId: get-coin
+      parameters:
+      - description: coin symbol
+        in: path
+        name: symbol
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.MessageOk'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.MessageErr'
+      summary: get an item
+      tags:
+      - coins
+swagger: "2.0"

@@ -25,7 +25,7 @@ type CoinListRepo interface {
 	Create(symbol string, coin *model.CoinItem) error
 	Read(symbol string) (*model.CoinItem, error)
 	Update(symbol string, coin *model.CoinItem) error
-	Delete(symbol string) error
+	Delete(symbol string) (*model.CoinItem, error)
 }
 
 // Create a item of the coin list
@@ -61,12 +61,13 @@ func (cl *CoinList) Update(symbol string, coin *model.CoinItem) error {
 }
 
 // Delete a item of the coin list by symbol
-func (cl *CoinList) Delete(symbol string) error {
+func (cl *CoinList) Delete(symbol string) (*model.CoinItem, error) {
 	cl.Lock()
 	defer cl.Unlock()
-	if _, ok := cl.m[symbol]; !ok {
-		return fmt.Errorf("%v: %w", symbol, model.ErrNotFound)
+	c, ok := cl.m[symbol]
+	if !ok {
+		return nil, fmt.Errorf("%v: %w", symbol, model.ErrNotFound)
 	}
 	delete(cl.m, symbol)
-	return nil
+	return c, nil
 }

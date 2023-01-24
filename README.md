@@ -15,8 +15,12 @@ http_listen: ":8080"
 log_file : "./log.txt"
 log_level : "debug"
 ```
+## REST
+See swagger docs http://localhost:8080/docs/index.html
+
 ## Usage libs
 -	github.com/spf13/cobra v1.2.1: CLI
 -	github.com/spf13/viper v1.10.1: unmarshal yaml
 -	go.uber.org/zap v1.17.0: logging
 -   github.com/gin-gonic/gin: REST API
+-   github.com/swaggo : swagger
