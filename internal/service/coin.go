@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"interviewDemo/internal/model"
 	"interviewDemo/internal/repo"
@@ -8,10 +9,10 @@ import (
 
 // CoinService interface for implementation CRUD
 type CoinService interface {
-	Create(symbol string, coin *model.CoinItem) error
-	Read(symbol string) (*model.CoinItem, error)
-	Update(symbol string, coin *model.CoinItem) error
-	Delete(symbol string) error
+	Create(ctx context.Context, symbol string, coin *model.CoinItem) error
+	Read(ctx context.Context, symbol string) (*model.CoinItem, error)
+	Update(ctx context.Context, symbol string, coin *model.CoinItem) error
+	Delete(ctx context.Context, symbol string) (*model.CoinItem, error)
 }
 
 // CoinListServise type of service
@@ -27,8 +28,8 @@ func NewCoinListServise(coinListRepo repo.CoinListRepo) *CoinListServise {
 }
 
 // Create a item of the coin list
-func (cl CoinListServise) Create(symbol string, coin *model.CoinItem) error {
-	err := cl.coinListRepo.Create(symbol, coin)
+func (cl CoinListServise) Create(ctx context.Context, symbol string, coin *model.CoinItem) error {
+	err := cl.coinListRepo.Create(ctx, symbol, coin)
 	if err != nil {
 		err = fmt.Errorf("failed create coin %w", err)
 	}
@@ -36,8 +37,8 @@ func (cl CoinListServise) Create(symbol string, coin *model.CoinItem) error {
 }
 
 // Read a item of the coin list
-func (cl CoinListServise) Read(symbol string) (*model.CoinItem, error) {
-	m, err := cl.coinListRepo.Read(symbol)
+func (cl CoinListServise) Read(ctx context.Context, symbol string) (*model.CoinItem, error) {
+	m, err := cl.coinListRepo.Read(ctx, symbol)
 	if err != nil {
 		err = fmt.Errorf("failed read coin %w", err)
 	}
@@ -45,8 +46,8 @@ func (cl CoinListServise) Read(symbol string) (*model.CoinItem, error) {
 }
 
 // Update a item of the coin list by symbol
-func (cl CoinListServise) Update(symbol string, coin *model.CoinItem) error {
-	err := cl.coinListRepo.Update(symbol, coin)
+func (cl CoinListServise) Update(ctx context.Context, symbol string, coin *model.CoinItem) error {
+	err := cl.coinListRepo.Update(ctx, symbol, coin)
 	if err != nil {
 		err = fmt.Errorf("failed update coin %w", err)
 	}
@@ -54,8 +55,8 @@ func (cl CoinListServise) Update(symbol string, coin *model.CoinItem) error {
 }
 
 // Delete a item of the coin list by symbol
-func (cl CoinListServise) Delete(symbol string) (*model.CoinItem, error) {
-	c, err := cl.coinListRepo.Delete(symbol)
+func (cl CoinListServise) Delete(ctx context.Context, symbol string) (*model.CoinItem, error) {
+	c, err := cl.coinListRepo.Delete(ctx, symbol)
 	if err != nil {
 		err = fmt.Errorf("failed delete coin %w", err)
 		return nil, err

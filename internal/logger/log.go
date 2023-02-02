@@ -7,12 +7,9 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// Log is zap logger
-var Log *zap.Logger
-
 // CreateLogger for app
-func CreateLogger(logFile string, logLevel string) error {
-	var err error
+func CreateLogger(logFile string, logLevel string) (*zap.Logger, error) {
+
 	cfg := zap.Config{
 		Encoding:         "json",
 		Level:            zap.NewAtomicLevelAt(defineLogLevel(logLevel)),
@@ -28,10 +25,13 @@ func CreateLogger(logFile string, logLevel string) error {
 			EncodeCaller: zapcore.ShortCallerEncoder,
 		},
 	}
-	if Log, err = cfg.Build(); err != nil {
-		return fmt.Errorf("failed to create logger: %v", err)
+
+	log, err := cfg.Build()
+	if err != nil {
+		return nil, fmt.Errorf("failed to create logger: %v", err)
 	}
-	return nil
+
+	return log, nil
 }
 
 func defineLogLevel(logLevel string) zapcore.Level {

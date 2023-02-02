@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"context"
 	"fmt"
 	"interviewDemo/internal/model"
 	"sync"
@@ -22,14 +23,14 @@ func NewCoinList() *CoinList {
 
 // CoinListRepo interface for implementation CRUD
 type CoinListRepo interface {
-	Create(symbol string, coin *model.CoinItem) error
-	Read(symbol string) (*model.CoinItem, error)
-	Update(symbol string, coin *model.CoinItem) error
-	Delete(symbol string) (*model.CoinItem, error)
+	Create(ctx context.Context, symbol string, coin *model.CoinItem) error
+	Read(ctx context.Context, symbol string) (*model.CoinItem, error)
+	Update(ctx context.Context, symbol string, coin *model.CoinItem) error
+	Delete(ctx context.Context, symbol string) (*model.CoinItem, error)
 }
 
 // Create a item of the coin list
-func (cl *CoinList) Create(symbol string, coin *model.CoinItem) error {
+func (cl *CoinList) Create(ctx context.Context, symbol string, coin *model.CoinItem) error {
 	cl.Lock()
 	defer cl.Unlock()
 	if _, ok := cl.m[symbol]; ok {
@@ -40,7 +41,7 @@ func (cl *CoinList) Create(symbol string, coin *model.CoinItem) error {
 }
 
 // Read a item of the coin list
-func (cl *CoinList) Read(symbol string) (*model.CoinItem, error) {
+func (cl *CoinList) Read(ctx context.Context, symbol string) (*model.CoinItem, error) {
 	cl.Lock()
 	defer cl.Unlock()
 	if _, ok := cl.m[symbol]; !ok {
@@ -50,7 +51,7 @@ func (cl *CoinList) Read(symbol string) (*model.CoinItem, error) {
 }
 
 // Update a item of the coin list by symbol
-func (cl *CoinList) Update(symbol string, coin *model.CoinItem) error {
+func (cl *CoinList) Update(ctx context.Context, symbol string, coin *model.CoinItem) error {
 	cl.Lock()
 	defer cl.Unlock()
 	if _, ok := cl.m[symbol]; !ok {
@@ -61,7 +62,7 @@ func (cl *CoinList) Update(symbol string, coin *model.CoinItem) error {
 }
 
 // Delete a item of the coin list by symbol
-func (cl *CoinList) Delete(symbol string) (*model.CoinItem, error) {
+func (cl *CoinList) Delete(ctx context.Context, symbol string) (*model.CoinItem, error) {
 	cl.Lock()
 	defer cl.Unlock()
 	c, ok := cl.m[symbol]

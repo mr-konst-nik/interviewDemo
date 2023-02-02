@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"interviewDemo/internal/config"
+	"interviewDemo/internal/delivery/http"
 	"interviewDemo/internal/logger"
-	"interviewDemo/internal/server"
 
 	"github.com/spf13/cobra"
 )
@@ -21,16 +21,22 @@ var rootCmd = &cobra.Command{
 	Use:   "web server",
 	Short: "test web server",
 	Run: func(cmd *cobra.Command, args []string) {
-		var cfg config.Config
-		if err := cfg.GetConfig(cfgFile); err != nil {
+
+		cfg, err := config.NewConfig(cfgFile)
+		if err != nil {
 			shutDown(err)
 		}
-		if err := logger.CreateLogger(cfg.LogFile, cfg.LogLevel); err != nil {
+
+		logger, err := logger.CreateLogger(cfg.LogFile, cfg.LogLevel)
+		if err != nil {
 			shutDown(err)
 		}
-		logger.Log.Sugar().Infof("Using config file: %s", cfg.LogCfgFile)
-		logger.Log.Sugar().Debugf("WEB server is runnig %s", cfg.HTTPListen)
-		if err := server.StartSRV(cfg.HTTPListen); err != nil {
+
+		log := logger.Sugar()
+		log.Infof("Using config file: %s", cfg.LogCfgFile)
+		log.Debugf("WEB server is runnig %s", cfg.HTTPListen)
+
+		if err := http.StartSRV(cfg.HTTPListen, log); err != nil {
 			shutDown(err)
 		}
 	},

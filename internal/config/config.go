@@ -20,30 +20,27 @@ type Config struct {
 	LogCfgFile string
 }
 
-// GetConfig of the app
-func (c *Config) GetConfig(cfgFile string) error {
+// NewConfig create new config item
+func NewConfig(cfgFile string) (*Config, error) {
 	if cfgFile != "" {
 
 		viper.SetConfigFile(cfgFile)
 		if err := viper.ReadInConfig(); err != nil {
-			return fmt.Errorf("failed read config: %v", err)
+			return &Config{}, fmt.Errorf("failed read config: %v", err)
 		}
-
-		c.HTTPListen = viper.GetString("http_listen")
-		c.LogFile = viper.GetString("log_file")
-		c.LogLevel = viper.GetString("log_level")
-		c.LogCfgFile = viper.ConfigFileUsed()
-		return nil
+		return &Config{
+			HTTPListen: viper.GetString("http_listen"),
+			LogFile:    viper.GetString("log_file"),
+			LogLevel:   viper.GetString("log_level"),
+			LogCfgFile: viper.ConfigFileUsed(),
+		}, nil
 
 	}
 
-	c.setDefaults()
-	return nil
-}
-
-func (c *Config) setDefaults() {
-	c.HTTPListen = defaultHTTPListen
-	c.LogFile = defaultLogFile
-	c.LogLevel = defaultLogLevel
-	c.LogCfgFile = "default"
+	return &Config{
+		HTTPListen: defaultHTTPListen,
+		LogFile:    defaultLogFile,
+		LogLevel:   defaultLogLevel,
+		LogCfgFile: "default",
+	}, nil
 }

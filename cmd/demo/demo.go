@@ -1,6 +1,9 @@
 package main
 
-import cmd "interviewDemo/internal/app"
+import (
+	_ "interviewDemo/docs"
+	cmd "interviewDemo/internal/app"
+)
 
 func main() {
 	cmd.Execute()
